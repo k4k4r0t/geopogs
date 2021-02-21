@@ -117,35 +117,6 @@ contract NFTokenEnumerable is
   }
 
   /**
-   * @dev Burns a NFT.
-   * @notice This is an internal function which should be called from user-implemented external
-   * burn function. Its purpose is to show and properly initialize data structures when using this
-   * implementation. Also, note that this burn implementation allows the minter to re-mint a burned
-   * NFT.
-   * @param _tokenId ID of the NFT to be burned.
-   */
-  function _burn(
-    uint256 _tokenId
-  )
-    internal
-    override
-    virtual
-  {
-    super._burn(_tokenId);
-
-    uint256 tokenIndex = idToIndex[_tokenId];
-    uint256 lastTokenIndex = tokens.length - 1;
-    uint256 lastToken = tokens[lastTokenIndex];
-
-    tokens[tokenIndex] = lastToken;
-
-    tokens.pop();
-    // This wastes gas if you are burning the last token but saves a little gas if you are not.
-    idToIndex[lastToken] = tokenIndex;
-    idToIndex[_tokenId] = 0;
-  }
-
-  /**
    * @dev Removes a NFT from an address.
    * @notice Use and override this function with caution. Wrong usage can have serious consequences.
    * @param _from Address from wich we want to remove the NFT.

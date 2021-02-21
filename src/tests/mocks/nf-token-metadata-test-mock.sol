@@ -22,7 +22,7 @@ contract NFTokenMetadataTestMock is
     view
     returns (string memory)
   {
-    return idToUri[_tokenId];
+    return idToData[_tokenId].uri;
   }
 
 }

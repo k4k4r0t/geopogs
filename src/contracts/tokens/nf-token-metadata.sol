@@ -3,14 +3,21 @@ pragma solidity 0.8.0;
 
 import "./nf-token.sol";
 import "./erc721-metadata.sol";
+import "../ownership/ownable.sol";
 
 /**
  * @dev Optional metadata implementation for ERC-721 non-fungible token standard.
  */
 contract NFTokenMetadata is
+  Ownable,
   NFToken,
   ERC721Metadata
 {
+
+  struct TokenMetadata {
+    string memo;
+    string uri;
+  }
 
   /**
    * @dev A descriptive name for a collection of NFTs.
@@ -23,9 +30,14 @@ contract NFTokenMetadata is
   string internal nftSymbol;
 
   /**
-   * @dev Mapping from NFT ID to metadata uri.
+   * @dev Base URI for token.
    */
-  mapping (uint256 => string) internal idToUri;
+  string internal baseUri;
+
+  /**
+   * @dev Mapping from NFT ID to metadata.
+   */
+  mapping (uint256 => TokenMetadata) idToData;
 
   /**
    * @dev Contract constructor.
@@ -34,6 +46,15 @@ contract NFTokenMetadata is
   constructor()
   {
     supportedInterfaces[0x5b5e139f] = true; // ERC721Metadata
+  }
+
+  function setBaseUri(
+    string calldata _baseUri
+  )
+    external
+    onlyOwner
+  {
+    baseUri = _baseUri;
   }
 
   /**
@@ -62,6 +83,10 @@ contract NFTokenMetadata is
     _symbol = nftSymbol;
   }
 
+  function append(string memory a, string memory b) internal pure returns (string memory) {
+    return string(abi.encodePacked(a, b));
+  }
+
   /**
    * @dev A distinct URI (RFC 3986) for a given NFT.
    * @param _tokenId Id for which we want uri.
@@ -76,40 +101,50 @@ contract NFTokenMetadata is
     validNFToken(_tokenId)
     returns (string memory)
   {
-    return idToUri[_tokenId];
+    return append(baseUri, idToData[_tokenId].uri);
   }
 
   /**
-   * @dev Burns a NFT.
-   * @notice This is an internal function which should be called from user-implemented external
-   * burn function. Its purpose is to show and properly initialize data structures when using this
-   * implementation. Also, note that this burn implementation allows the minter to re-mint a burned
-   * NFT.
-   * @param _tokenId ID of the NFT to be burned.
+   * @dev A memo for a given NFT.
+   * @param _tokenId Id for which we want memo.
+   * @return memo of _tokenId.
    */
-  function _burn(
+  function tokenMemo(
     uint256 _tokenId
   )
-    internal
-    override
-    virtual
+    external
+    view
+    validNFToken(_tokenId)
+    returns (string memory)
   {
-    super._burn(_tokenId);
-
-    if (bytes(idToUri[_tokenId]).length != 0)
-    {
-      delete idToUri[_tokenId];
-    }
+    return idToData[_tokenId].memo;
   }
 
   /**
-   * @dev Set a distinct URI (RFC 3986) for a given NFT ID.
-   * @notice This is an internal function which should be called from user-implemented external
-   * function. Its purpose is to show and properly initialize data structures when using this
-   * implementation.
-   * @param _tokenId Id for which we want URI.
-   * @param _uri String representing RFC 3986 URI.
+   * @param _tokenId Id for which we want data.
+   * @return data of _tokenId.
    */
+  function tokenData(
+    uint256 _tokenId
+  )
+    external
+    view
+    validNFToken(_tokenId)
+    returns (TokenMetadata memory)
+  {
+    return idToData[_tokenId];
+  }
+
+  function _setTokenData(
+    uint256 _tokenId,
+    TokenMetadata memory _data
+  )
+    internal
+    validNFToken(_tokenId)
+  {
+    idToData[_tokenId] = _data;
+  }
+
   function _setTokenUri(
     uint256 _tokenId,
     string memory _uri
@@ -117,7 +152,6 @@ contract NFTokenMetadata is
     internal
     validNFToken(_tokenId)
   {
-    idToUri[_tokenId] = _uri;
+    idToData[_tokenId].uri = _uri;
   }
-
 }

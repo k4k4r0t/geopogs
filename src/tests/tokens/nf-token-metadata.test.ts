@@ -90,21 +90,3 @@ spec.test('throws when trying to get URI of invalid NFT ID', async (ctx) => {
   await ctx.reverts(() => nftoken.instance.methods.tokenURI(id1).call(), '003002');
 });
 
-spec.test('corectly burns a NFT', async (ctx) => {
-  const nftoken = ctx.get('nfToken');
-  const owner = ctx.get('owner');
-  const bob = ctx.get('bob');
-  const id1 = ctx.get('id1');
-  const uri1 = ctx.get('uri1');
-
-  await nftoken.instance.methods.mint(bob, id1, uri1).send({ from: owner });
-  const logs = await nftoken.instance.methods.burn(id1).send({ from: owner });
-  ctx.not(logs.events.Transfer, undefined);
-
-  const balance = await nftoken.instance.methods.balanceOf(bob).call();
-  ctx.is(balance, '0');
-  await ctx.reverts(() => nftoken.instance.methods.ownerOf(id1).call(), '003002');
-  const uri = await nftoken.instance.methods.checkUri(id1).call();
-  ctx.is(uri, '');
-});
-  

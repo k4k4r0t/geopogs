@@ -3,7 +3,6 @@ pragma solidity 0.8.0;
 
 import "../tokens/nf-token-metadata.sol";
 import "../tokens/nf-token-enumerable.sol";
-import "../ownership/ownable.sol";
 
 /**
  * @dev This is an example contract implementation of NFToken with enumerable and metadata
@@ -11,8 +10,7 @@ import "../ownership/ownable.sol";
  */
 contract NFTokenMetadataEnumerableMock is
   NFTokenEnumerable,
-  NFTokenMetadata,
-  Ownable
+  NFTokenMetadata
 {
 
   /**
@@ -48,19 +46,6 @@ contract NFTokenMetadataEnumerableMock is
   }
 
   /**
-   * @dev Removes a NFT from owner.
-   * @param _tokenId Which NFT we want to remove.
-   */
-  function burn(
-    uint256 _tokenId
-  )
-    external
-    onlyOwner
-  {
-    super._burn(_tokenId);
-  }
-
-  /**
    * @dev Mints a new NFT.
    * @notice This is an internal function which should be called from user-implemented external
    * mint function. Its purpose is to show and properly initialize data structures when using this
@@ -77,28 +62,6 @@ contract NFTokenMetadataEnumerableMock is
     virtual
   {
     NFTokenEnumerable._mint(_to, _tokenId);
-  }
-
-  /**
-   * @dev Burns a NFT.
-   * @notice This is an internal function which should be called from user-implemented external
-   * burn function. Its purpose is to show and properly initialize data structures when using this
-   * implementation. Also, note that this burn implementation allows the minter to re-mint a burned
-   * NFT.
-   * @param _tokenId ID of the NFT to be burned.
-   */
-  function _burn(
-    uint256 _tokenId
-  )
-    internal
-    override(NFTokenMetadata, NFTokenEnumerable)
-    virtual
-  {
-    NFTokenEnumerable._burn(_tokenId);
-    if (bytes(idToUri[_tokenId]).length != 0)
-    {
-      delete idToUri[_tokenId];
-    }
   }
 
   /**

@@ -375,26 +375,3 @@ spec.test('corectly safe transfers NFT from owner to smart contract that can rec
   ctx.is(saraBalance, '1');
   ctx.is(ownerOfId1, tokenReceiver.receipt._address);
 });
-
-spec.test('corectly burns a NFT', async (ctx) => {
-  const nftoken = ctx.get('nfToken');
-  const owner = ctx.get('owner');
-  const bob = ctx.get('bob');
-  const id1 = ctx.get('id1');
-
-  await nftoken.instance.methods.mint(bob, id1).send({ from: owner });
-  const logs = await nftoken.instance.methods.burn(id1).send({ from: owner });
-  ctx.not(logs.events.Transfer, undefined);
-
-  const balance = await nftoken.instance.methods.balanceOf(bob).call();
-  ctx.is(balance, '0');
-  await ctx.reverts(() => nftoken.instance.methods.ownerOf(id1).call(), '003002');
-});
-
-spec.test('throws when trying to burn non existant NFT', async (ctx) => {
-  const nftoken = ctx.get('nfToken');
-  const owner = ctx.get('owner');
-  const id1 = ctx.get('id1');
-
-  await ctx.reverts(() => nftoken.instance.methods.burn(id1).send({ from: owner }), '003002');
-});

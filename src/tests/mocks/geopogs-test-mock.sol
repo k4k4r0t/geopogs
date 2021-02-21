@@ -1,17 +1,18 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.0;
 
-import "../../contracts/mocks/nf-token-metadata-enumerable-mock.sol";
+import "../../contracts/geopogs.sol";
 
-contract NFTokenMetadataEnumerableTestMock is
-  NFTokenMetadataEnumerableMock
+contract GeoPogsTestMock is
+  GeoPogs
 {
 
   constructor(
     string memory _name,
-    string memory _symbol
+    string memory _symbol,
+    string memory _baseUri
   )
-    NFTokenMetadataEnumerableMock(_name, _symbol)
+    GeoPogs(_name, _symbol, _baseUri)
   {
   }
 

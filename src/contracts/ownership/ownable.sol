@@ -12,8 +12,8 @@ contract Ownable
   /**
    * @dev Error constants.
    */
-  string public constant NOT_CURRENT_OWNER = "018001";
-  string public constant CANNOT_TRANSFER_TO_ZERO_ADDRESS = "018002";
+  string constant NOT_CURRENT_OWNER = "018001";
+  string constant CANNOT_TRANSFER_TO_ZERO_ADDRESS = "018002";
 
   /**
    * @dev Current owner address.
@@ -55,6 +55,7 @@ contract Ownable
     address _newOwner
   )
     public
+    virtual
     onlyOwner
   {
     require(_newOwner != address(0), CANNOT_TRANSFER_TO_ZERO_ADDRESS);
