@@ -16,15 +16,15 @@ contract GeoPogs is NFTokenEnumerable, NFTokenMetadata {
   string constant PRICE_TOO_LOW = "300002";
   string constant ALREADY_OWNED = "300003";
   string constant SERIES_INVALID = "300004";
-  uint8 constant TRIBUTE_POG_LIMIT = 21;
-  uint8 constant NORMAL_POG_LIMIT = 42;
+  uint256 constant TRIBUTE_POG_LIMIT = 21;
+  uint256 constant NORMAL_POG_LIMIT = 42;
 
   /**
    * @dev Mapping from token ID to its price.
    */
   mapping(uint256 => uint256) internal idToPrice;
   uint256 internal forSaleCount;
-  uint8 public edition;
+  uint256 public edition;
   uint256 internal editionCutoff;
 
   address public crossChainAddress;
@@ -55,8 +55,8 @@ contract GeoPogs is NFTokenEnumerable, NFTokenMetadata {
    */
   function mint(
     address _to,
-    uint8 _series,
-    uint16 _pressing,
+    uint256 _series,
+    uint256 _pressing,
     uint256 _price,
     string calldata _memo,
     string calldata _uri
@@ -225,9 +225,9 @@ contract GeoPogs is NFTokenEnumerable, NFTokenMetadata {
    * @param _pressing number
    */
   function _makeTokenId(
-    uint8 _edition,
-    uint8 _series,
-    uint16 _pressing
+    uint256 _edition,
+    uint256 _series,
+    uint256 _pressing
   ) internal pure returns (uint256) {
     return
       (uint256(_edition) << 24) |
@@ -244,9 +244,9 @@ contract GeoPogs is NFTokenEnumerable, NFTokenMetadata {
     external
     view
     validNFToken(_tokenId)
-    returns (uint8)
+    returns (uint256)
   {
-    return uint8(_tokenId >> 24);
+    return uint256(_tokenId >> 24);
   }
 
   /**
@@ -258,9 +258,9 @@ contract GeoPogs is NFTokenEnumerable, NFTokenMetadata {
     external
     view
     validNFToken(_tokenId)
-    returns (uint8)
+    returns (uint256)
   {
-    return uint8((_tokenId >> 16) & ((1 << 8) - 1));
+    return uint256((_tokenId >> 16) & ((1 << 8) - 1));
   }
 
   /**
@@ -272,9 +272,9 @@ contract GeoPogs is NFTokenEnumerable, NFTokenMetadata {
     external
     view
     validNFToken(_tokenId)
-    returns (uint16)
+    returns (uint256)
   {
-    return uint16(_tokenId & ((1 << 16) - 1));
+    return uint256(_tokenId & ((1 << 16) - 1));
   }
 
   /**
